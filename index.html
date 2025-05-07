@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stopwatch Web App</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #display {
+      font-size: 3rem;
+      margin: 20px 0;
+    }
+
+    .buttons button {
+      background: white;
+      color: #2575fc;
+      border: none;
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .buttons button:hover {
+      background-color: #2575fc;
+      color: white;
+    }
+
+    #laps {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    #laps li {
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 5px 0;
+      padding: 5px 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⏱️ Stopwatch</h1>
+    <div id="display">00:00:00</div>
+    <div class="buttons">
+      <button onclick="start()">Start</button>
+      <button onclick="pause()">Pause</button>
+      <button onclick="reset()">Reset</button>
+      <button onclick="lap()">Lap</button>
+    </div>
+    <ul id="laps"></ul>
+  </div>
+
+  <script>
+    let [seconds, minutes, hours] = [0, 0, 0];
+    let display = document.getElementById("display");
+    let interval = null;
+    let lapCount = 0;
+
+    function updateDisplay() {
+      let h = hours < 10 ? "0" + hours : hours;
+      let m = minutes < 10 ? "0" + minutes : minutes;
+      let s = seconds < 10 ? "0" + seconds : seconds;
+      display.innerText = `${h}:${m}:${s}`;
+    }
+
+    function start() {
+      if (interval) return;
+      interval = setInterval(() => {
+        seconds++;
+        if (seconds === 60) {
+          seconds = 0;
+          minutes++;
+          if (minutes === 60) {
+            minutes = 0;
+            hours++;
+          }
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    function pause() {
+      clearInterval(interval);
+      interval = null;
+    }
+
+    function reset() {
+      clearInterval(interval);
+      interval = null;
+      [seconds, minutes, hours] = [0, 0, 0];
+      updateDisplay();
+      document.getElementById("laps").innerHTML = "";
+      lapCount = 0;
+    }
+
+    function lap() {
+      lapCount++;
+      const lapTime = display.innerText;
+      const lapList = document.getElementById("laps");
+      const li = document.createElement("li");
+      li.innerText = `Lap ${lapCount}: ${lapTime}`;
+      lapList.appendChild(li);
+    }
+  </script>
+</body>
+</html>
